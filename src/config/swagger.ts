@@ -134,6 +134,194 @@ const swaggerOptions: Options = {
             updatedAt: { type: 'string', format: 'date-time' },
           },
         },
+        Category: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' },
+            title: { type: 'string', maxLength: 100 },
+            activeFlag: { type: 'boolean', default: true },
+            createdAt: { type: 'string', format: 'date-time' },
+            updatedAt: { type: 'string', format: 'date-time' },
+          },
+          required: ['title'],
+        },
+        SubCategory: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' },
+            title: { type: 'string', maxLength: 100 },
+            categoryId: { type: 'string' },
+            activeFlag: { type: 'boolean', default: true },
+            createdAt: { type: 'string', format: 'date-time' },
+            updatedAt: { type: 'string', format: 'date-time' },
+          },
+          required: ['title', 'categoryId'],
+        },
+        MenuItem: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' },
+            title: { type: 'string', maxLength: 200 },
+            description: { type: 'string' },
+            calories: { type: 'integer', minimum: 0 },
+            price: { type: 'number', minimum: 0, format: 'decimal' },
+            ingredients: {
+              type: 'array',
+              items: { type: 'string' },
+            },
+            pictureLinks: {
+              type: 'array',
+              items: { type: 'string', format: 'uri' },
+            },
+            categoryId: { type: 'string' },
+            subCategoryId: { type: 'string' },
+            activeFlag: { type: 'boolean', default: true },
+            createdAt: { type: 'string', format: 'date-time' },
+            updatedAt: { type: 'string', format: 'date-time' },
+          },
+          required: ['title', 'description', 'calories', 'price', 'categoryId'],
+        },
+        CategoryCreate: {
+          type: 'object',
+          properties: {
+            title: { type: 'string', maxLength: 100 },
+          },
+          required: ['title'],
+        },
+        CategoryUpdate: {
+          type: 'object',
+          properties: {
+            title: { type: 'string', maxLength: 100 },
+            activeFlag: { type: 'boolean' },
+          },
+        },
+        SubCategoryCreate: {
+          type: 'object',
+          properties: {
+            title: { type: 'string', maxLength: 100 },
+            categoryId: { type: 'string' },
+          },
+          required: ['title', 'categoryId'],
+        },
+        SubCategoryUpdate: {
+          type: 'object',
+          properties: {
+            title: { type: 'string', maxLength: 100 },
+            categoryId: { type: 'string' },
+            activeFlag: { type: 'boolean' },
+          },
+        },
+        MenuItemCreate: {
+          type: 'object',
+          properties: {
+            title: { type: 'string', maxLength: 200 },
+            description: { type: 'string' },
+            calories: { type: 'integer', minimum: 0 },
+            price: { type: 'number', minimum: 0 },
+            ingredients: {
+              type: 'array',
+              items: { type: 'string' },
+            },
+            categoryId: { type: 'string' },
+            subCategoryId: { type: 'string' },
+          },
+          required: ['title', 'description', 'calories', 'price', 'categoryId'],
+        },
+        MenuItemUpdate: {
+          type: 'object',
+          properties: {
+            title: { type: 'string', maxLength: 200 },
+            description: { type: 'string' },
+            calories: { type: 'integer', minimum: 0 },
+            price: { type: 'number', minimum: 0 },
+            ingredients: {
+              type: 'array',
+              items: { type: 'string' },
+            },
+            categoryId: { type: 'string' },
+            subCategoryId: { type: 'string' },
+            activeFlag: { type: 'boolean' },
+          },
+        },
+        CategoryStatistics: {
+          type: 'object',
+          properties: {
+            totalCategories: { type: 'integer' },
+            activeCategories: { type: 'integer' },
+            inactiveCategories: { type: 'integer' },
+            categories: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  id: { type: 'string' },
+                  title: { type: 'string' },
+                  activeFlag: { type: 'boolean' },
+                  subCategoryCount: { type: 'integer' },
+                  menuItemCount: { type: 'integer' },
+                  createdAt: { type: 'string', format: 'date-time' },
+                  updatedAt: { type: 'string', format: 'date-time' },
+                },
+              },
+            },
+          },
+        },
+        SubCategoryStatistics: {
+          type: 'object',
+          properties: {
+            totalSubCategories: { type: 'integer' },
+            activeSubCategories: { type: 'integer' },
+            inactiveSubCategories: { type: 'integer' },
+            subCategories: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  id: { type: 'string' },
+                  title: { type: 'string' },
+                  categoryId: { type: 'string' },
+                  activeFlag: { type: 'boolean' },
+                  menuItemCount: { type: 'integer' },
+                  createdAt: { type: 'string', format: 'date-time' },
+                  updatedAt: { type: 'string', format: 'date-time' },
+                },
+              },
+            },
+          },
+        },
+        MenuItemStatistics: {
+          type: 'object',
+          properties: {
+            totalMenuItems: { type: 'integer' },
+            activeMenuItems: { type: 'integer' },
+            inactiveMenuItems: { type: 'integer' },
+            priceStats: {
+              type: 'object',
+              properties: {
+                average: { type: 'string' },
+                minimum: { type: 'string' },
+                maximum: { type: 'string' },
+              },
+            },
+          },
+        },
+        PaginationInfo: {
+          type: 'object',
+          properties: {
+            page: { type: 'integer' },
+            limit: { type: 'integer' },
+            total: { type: 'integer' },
+            totalPages: { type: 'integer' },
+          },
+        },
+        ApiResponse: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean' },
+            message: { type: 'string' },
+            data: { type: 'object' },
+          },
+        },
         Error: {
           type: 'object',
           properties: {

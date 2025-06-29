@@ -130,6 +130,41 @@ export const ERROR_MESSAGES = {
   INTERNAL_SERVER_ERROR: 'Internal server error',
   RESOURCE_NOT_FOUND: 'Resource not found',
   DUPLICATE_ENTRY: 'Duplicate entry',
+
+  // Categories
+  CATEGORY_NOT_FOUND: 'Category not found',
+  CATEGORY_ALREADY_EXISTS: 'Category already exists',
+  CATEGORY_NAME_REQUIRED: 'Category name is required',
+  CATEGORY_NAME_MIN_LENGTH: 'Category name must be at least 3 characters long',
+  CATEGORY_NAME_MAX_LENGTH: 'Category name must be less than 100 characters',
+  CATEGORY_DESCRIPTION_REQUIRED: 'Category description is required',
+  CATEGORY_INACTIVE: 'Category is inactive',
+  CATEGORY_NOT_BELONG_TO_CATEGORY: 'Category does not belong to the specified category',
+  CATEGORY_NOT_ACTIVE: 'Category is not active',
+
+  //SubCategories
+  SUBCATEGORY_NOT_FOUND: 'Subcategory not found',
+  SUBCATEGORY_ALREADY_EXISTS: 'Subcategory already exists',
+  SUBCATEGORY_NAME_REQUIRED: 'Subcategory name is required',
+  SUBCATEGORY_NAME_MIN_LENGTH: 'Subcategory name must be at least 3 characters long',
+  SUBCATEGORY_NAME_MAX_LENGTH: 'Subcategory name must be less than 100 characters',
+  SUBCATEGORY_DESCRIPTION_REQUIRED: 'Subcategory description is required',
+  SUBCATEGORY_INACTIVE: 'Subcategory is inactive',
+  SUBCATEGORY_NOT_BELONG_TO_CATEGORY: 'Subcategory does not belong to the specified category',
+  SUBCATEGORY_NOT_ACTIVE: 'Subcategory is inactive',
+
+  //MenuItems
+  MENU_ITEM_NOT_FOUND: 'Menu item not found',
+  MENU_ITEM_ALREADY_EXISTS: 'Menu item already exists',
+  MENU_ITEM_NAME_REQUIRED: 'Menu item name is required',
+  MENU_ITEM_NAME_MIN_LENGTH: 'Menu item name must be at least 3 characters long',
+  MENU_ITEM_NAME_MAX_LENGTH: 'Menu item name must be less than 100 characters',
+  MENU_ITEM_DESCRIPTION_REQUIRED: 'Menu item description is required',
+  MENU_ITEM_NOT_UPDATED: 'Menu item not updated',
+  MENU_ITEM_NOT_DELETED: 'Menu item not deleted',
+  NO_IMAGES_PROVIDED: 'No images provided',
+  DATABASE_NOT_CONNECTED: 'Database not connected',
+  
 };
 
 // Success Messages
@@ -161,5 +196,31 @@ export const SUCCESS_MESSAGES = {
   RESOURCE_CREATED: 'Resource created successfully',
   RESOURCE_UPDATED: 'Resource updated successfully',
   RESOURCE_DELETED: 'Resource deleted successfully',
+
+  // Categories
+  CATEGORIES_RETRIEVED: 'Categories retrieved successfully',
+  CATEGORY_RETRIEVED: 'Category retrieved successfully',
+  CATEGORY_CREATED: 'Category created successfully',
+  CATEGORY_UPDATED: 'Category updated successfully',
+  CATEGORY_DELETED: 'Category deleted successfully',
+  CATEGORY_STATISTICS_RETRIEVED: 'Category statistics retrieved successfully',
+
+  //SubCategories
+  SUBCATEGORIES_RETRIEVED: 'Subcategories retrieved successfully',
+  SUBCATEGORY_RETRIEVED: 'Subcategory retrieved successfully',
+  SUBCATEGORY_CREATED: 'Subcategory created successfully',
+  SUBCATEGORY_UPDATED: 'Subcategory updated successfully',
+  SUBCATEGORY_DELETED: 'Subcategory deleted successfully',
+  SUBCATEGORY_STATISTICS_RETRIEVED: 'Subcategory statistics retrieved successfully',
+  
+  //MenuItems
+  MENU_ITEMS_RETRIEVED: 'Menu items retrieved successfully',
+  MENU_ITEM_RETRIEVED: 'Menu item retrieved successfully',
+  MENU_ITEM_CREATED: 'Menu item created successfully',
+  MENU_ITEM_UPDATED: 'Menu item updated successfully',
+  MENU_ITEM_DELETED: 'Menu item deleted successfully',  
+  IMAGES_UPLOADED_SUCCESSFULLY: 'Images uploaded successfully',
+  IMAGE_REMOVED_SUCCESSFULLY: 'Image removed successfully',
+  MENU_ITEM_STATISTICS_RETRIEVED: 'Menu item statistics retrieved successfully',
   
 }; 

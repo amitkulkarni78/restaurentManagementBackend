@@ -5,6 +5,9 @@ import { USER_ROLES } from '../utils/constants';
 // Import entities
 import User from '../models/User';
 import Order from '../models/Order';
+import Category from '../models/Category';
+import SubCategory from '../models/SubCategory';
+import MenuItem from '../models/MenuItem';
 
 class Database {
   private dataSource: DataSource | null = null;
@@ -19,7 +22,7 @@ class Database {
         type: 'mongodb',
         url: mongoUri,
         database: process.env.DB_NAME || 'restaurant_management',
-        entities: [User, Order],
+        entities: [User, Order, Category, SubCategory, MenuItem],
         synchronize: false, // Disable auto-synchronization to avoid index issues
         logging: process.env.NODE_ENV === 'development',
         // Add authentication options if credentials are provided

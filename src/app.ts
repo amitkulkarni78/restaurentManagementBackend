@@ -21,6 +21,9 @@ import orderRoutes from './routes/orders';
 import paymentRoutes from './routes/payments';
 import couponRoutes from './routes/coupons';
 import deliveryRoutes from './routes/deliveries';
+import categoryRoutes from './routes/categories';
+import subCategoryRoutes from './routes/subCategories';
+import menuItemRoutes from './routes/menuItems';
 
 const app = express();
 
@@ -229,6 +232,9 @@ app.use(`${apiPrefix}/orders`, orderRoutes);
 app.use(`${apiPrefix}/payments`, paymentRoutes);
 app.use(`${apiPrefix}/coupons`, couponRoutes);
 app.use(`${apiPrefix}/deliveries`, deliveryRoutes);
+app.use(`${apiPrefix}/categories`, categoryRoutes);
+app.use(`${apiPrefix}/subcategories`, subCategoryRoutes);
+app.use(`${apiPrefix}/menu-items`, menuItemRoutes);
 
 // Swagger documentation
 const specs = swaggerJsdoc(swaggerOptions as any);
