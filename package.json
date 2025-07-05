@@ -23,6 +23,9 @@
         "docker:run": "docker run -p 3000:3000 restaurant-management-api",
         "docker:compose": "docker-compose up --build",
         "docker:compose:down": "docker-compose down",
+        "docker:prod": "docker-compose -f docker-compose.prod.yml up --build",
+        "docker:prod:down": "docker-compose -f docker-compose.prod.yml down",
+        "deploy:prod": "chmod +x scripts/deploy-prod.sh && ./scripts/deploy-prod.sh",
         "type-check": "tsc --noEmit"
     },
     "keywords": [
@@ -54,7 +57,7 @@
         "jsonwebtoken": "^9.0.2",
         "mongodb": "^6.17.0",
         "mongoose": "^7.5.0",
-        "multer": "^1.4.5-lts.2",
+        "multer": "^2.0.1",
         "nodemailer": "^6.9.4",
         "passport": "^0.6.0",
         "passport-facebook": "^3.0.0",
