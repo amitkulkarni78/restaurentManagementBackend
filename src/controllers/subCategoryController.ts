@@ -3,6 +3,10 @@ import { HTTP_STATUS, ERROR_MESSAGES, SUCCESS_MESSAGES } from '../utils/constant
 import { AppError } from '../middlewares/errorHandler';
 import db from '../config/db';
 import logger from '../utils/logger';
+import Category from '../models/Category';
+import SubCategory from '../models/SubCategory';
+import MenuItem from '../models/MenuItem';
+
 class SubCategoryController {
   // Get all subcategories
   async getAllSubCategories(req: Request, res: Response): Promise<void> {
@@ -12,7 +16,7 @@ class SubCategoryController {
       throw new AppError('Database not connected', HTTP_STATUS.INTERNAL_SERVER_ERROR);
     }
 
-    const subCategoryRepository = dataSource.getRepository('SubCategory');
+    const subCategoryRepository = dataSource.getRepository(SubCategory);
     
     const { categoryId, activeOnly = 'true' } = req.query;
     const whereCondition: any = {};
@@ -56,7 +60,7 @@ class SubCategoryController {
       throw new AppError('Database not connected', HTTP_STATUS.INTERNAL_SERVER_ERROR);
     }
 
-    const subCategoryRepository = dataSource.getRepository('SubCategory');
+    const subCategoryRepository = dataSource.getRepository(SubCategory);
     
     const subCategory = await subCategoryRepository.findOne({
       where: { id },
@@ -89,8 +93,8 @@ class SubCategoryController {
       throw new AppError('Database not connected', HTTP_STATUS.INTERNAL_SERVER_ERROR);
     }
 
-    const subCategoryRepository = dataSource.getRepository('SubCategory');
-    const categoryRepository = dataSource.getRepository('Category');
+    const subCategoryRepository = dataSource.getRepository(SubCategory);
+    const categoryRepository = dataSource.getRepository(Category);
 
     // Verify parent category exists
     const parentCategory = await categoryRepository.findOne({
@@ -153,8 +157,8 @@ class SubCategoryController {
       throw new AppError('Database not connected', HTTP_STATUS.INTERNAL_SERVER_ERROR);
     }
 
-    const subCategoryRepository = dataSource.getRepository('SubCategory');
-    const categoryRepository = dataSource.getRepository('Category');
+    const subCategoryRepository = dataSource.getRepository(SubCategory);
+    const categoryRepository = dataSource.getRepository(Category);
 
     // Find subcategory
     const subCategory = await subCategoryRepository.findOne({
@@ -233,8 +237,8 @@ class SubCategoryController {
       throw new AppError('Database not connected', HTTP_STATUS.INTERNAL_SERVER_ERROR);
     }
 
-    const subCategoryRepository = dataSource.getRepository('SubCategory');
-    const menuItemRepository = dataSource.getRepository('MenuItem');
+    const subCategoryRepository = dataSource.getRepository(SubCategory);
+    const menuItemRepository = dataSource.getRepository(MenuItem);
 
     // Check if subcategory exists
     const subCategory = await subCategoryRepository.findOne({
@@ -284,8 +288,8 @@ class SubCategoryController {
       throw new AppError('Database not connected', HTTP_STATUS.INTERNAL_SERVER_ERROR);
     }
 
-    const subCategoryRepository = dataSource.getRepository('SubCategory');
-    const categoryRepository = dataSource.getRepository('Category');
+    const subCategoryRepository = dataSource.getRepository(SubCategory);
+    const categoryRepository = dataSource.getRepository(Category);
 
     // Verify category exists
     const category = await categoryRepository.findOne({
@@ -334,8 +338,8 @@ class SubCategoryController {
       throw new AppError('Database not connected', HTTP_STATUS.INTERNAL_SERVER_ERROR);
     }
 
-    const subCategoryRepository = dataSource.getRepository('SubCategory');
-    const menuItemRepository = dataSource.getRepository('MenuItem');
+    const subCategoryRepository = dataSource.getRepository(SubCategory);
+    const menuItemRepository = dataSource.getRepository(MenuItem);
 
     const totalSubCategories = await subCategoryRepository.count();
     const activeSubCategories = await subCategoryRepository.count({ where: { activeFlag: true } });

@@ -182,6 +182,7 @@ export const SUCCESS_MESSAGES = {
   ORDER_CREATED: 'Order created successfully',
   ORDER_UPDATED: 'Order updated successfully',
   ORDER_CANCELLED: 'Order cancelled successfully',
+  ORDER_DELETED: 'Order deleted successfully',
   
   // Payments
   PAYMENT_SUCCESS: 'Payment processed successfully',

@@ -65,7 +65,6 @@ const SubCategorySchema = new EntitySchema<SubCategory>({
     {
       name: 'IDX_SUBCATEGORY_TITLE_CATEGORY',
       columns: ['title', 'categoryId'],
-      unique: true,
     },
   ],
 });

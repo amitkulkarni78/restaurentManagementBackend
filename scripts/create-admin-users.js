@@ -61,13 +61,39 @@ async function createAdminUsers() {
             }
         ];
 
-        const result = await userCollection.insertMany(adminUsers);
+        // Insert users one by one to handle potential duplicates
+        let createdCount = 0;
+        for (const adminUser of adminUsers) {
+            try {
+                // Check if user already exists
+                const existingUser = await userCollection.findOne({
+                    $or: [
+                        { email: adminUser.email },
+                        { mobileNumber: adminUser.mobileNumber }
+                    ]
+                });
 
-        console.log('👥 Default admin users created successfully!');
-        console.log('📧 Super Admin: superadmin@restaurant.com');
-        console.log('📧 Restaurant Manager: manager@restaurant.com');
-        console.log('🔑 Password for both: admin123456');
-        console.log(`📊 Created ${result.insertedCount} admin users`);
+                if (!existingUser) {
+                    await userCollection.insertOne(adminUser);
+                    console.log(`✅ Created admin user: ${adminUser.email}`);
+                    createdCount++;
+                } else {
+                    console.log(`⚠️  Admin user already exists: ${adminUser.email}`);
+                }
+            } catch (userError) {
+                console.error(`❌ Error creating admin user ${adminUser.email}:`, userError);
+            }
+        }
+
+        if (createdCount > 0) {
+            console.log('👥 Admin users created successfully!');
+            console.log('📧 Super Admin: superadmin@restaurant.com');
+            console.log('📧 Restaurant Manager: manager@restaurant.com');
+            console.log('🔑 Password for both: admin123456');
+            console.log(`📊 Created ${createdCount} admin users`);
+        } else {
+            console.log('ℹ️  No new admin users were created (all already exist)');
+        }
 
     } catch (error) {
         console.error('❌ Error creating admin users:', error);

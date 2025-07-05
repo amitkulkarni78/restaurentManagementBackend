@@ -2,7 +2,7 @@ import { EntitySchema } from 'typeorm';
 import { USER_ROLES } from '../utils/constants';
 import { IUser, UserRole } from '../types';
 
-export class User implements IUser {
+class User implements IUser {
   id?: string;
   firstName: string;
   lastName: string;
@@ -27,11 +27,15 @@ export class User implements IUser {
     country: string;
   };
   preferences?: any;
+  refreshToken?: string;
+  loginAttempts?: number;
+  isLocked?: boolean;
+  lockedUntil?: Date;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-export default new EntitySchema({
+const UserSchema = new EntitySchema({
   name: 'User',
   target: User,
   columns: {
@@ -110,6 +114,22 @@ export default new EntitySchema({
       type: 'string',
       nullable: true
     },
+    refreshToken: {
+      type: 'string',
+      nullable: true
+    },
+    loginAttempts: {
+      type: 'int',
+      default: 0
+    },
+    isLocked: {
+      type: 'boolean',
+      default: false
+    },
+    lockedUntil: {
+      type: 'date',
+      nullable: true
+    },
     createdAt: {
       type: 'date',
       default: () => new Date()
@@ -119,4 +139,7 @@ export default new EntitySchema({
       default: () => new Date()
     }
   }
-}); 
+});
+
+export { User, UserSchema };
+export default UserSchema;

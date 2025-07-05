@@ -24,7 +24,7 @@ const upload = multer({
 
 /**
  * @swagger
- * /api/menu-items:
+ * /api/v1/menu-items:
  *   get:
  *     summary: Get all menu items
  *     description: Retrieve all menu items with optional filtering and pagination
@@ -34,8 +34,8 @@ const upload = multer({
  *         name: activeOnly
  *         schema:
  *           type: string
- *           enum: [true, false]
- *         description: Filter by active status (default: true)
+ *           enum: ["true", "false"]
+ *         description: Filter by active status (default true)
  *       - in: query
  *         name: categoryId
  *         schema:
@@ -82,13 +82,13 @@ const upload = multer({
  *         name: sortBy
  *         schema:
  *           type: string
- *           enum: [title, price, calories, createdAt]
+ *           enum: ["title", "price", "calories", "createdAt"]
  *         description: Sort field
  *       - in: query
  *         name: sortOrder
  *         schema:
  *           type: string
- *           enum: [asc, desc]
+ *           enum: ["asc", "desc"]
  *           default: asc
  *         description: Sort order
  *     responses:
@@ -125,7 +125,7 @@ router.get('/', menuItemController.getAllMenuItems);
 
 /**
  * @swagger
- * /api/menu-items/{id}:
+ * /api/v1/menu-items/{id}:
  *   get:
  *     summary: Get menu item by ID
  *     description: Retrieve a specific menu item by its ID
@@ -173,7 +173,7 @@ router.get('/:id', menuItemController.getMenuItemById);
 
 /**
  * @swagger
- * /api/menu-items:
+ * /api/v1/menu-items:
  *   post:
  *     summary: Create a new menu item
  *     description: Create a new menu item (Admin and SuperAdmin only)
@@ -254,7 +254,7 @@ router.post('/', authenticateJWT, authorize(UserRole.ADMIN), asyncHandler(menuIt
 
 /**
  * @swagger
- * /api/menu-items/{id}:
+ * /api/v1/menu-items/{id}:
  *   put:
  *     summary: Update a menu item
  *     description: Update an existing menu item (Admin and SuperAdmin only)
@@ -343,7 +343,7 @@ router.put('/:id', authenticateJWT, authorize(UserRole.ADMIN), asyncHandler(menu
 
 /**
  * @swagger
- * /api/menu-items/{id}:
+ * /api/v1/menu-items/{id}:
  *   delete:
  *     summary: Delete a menu item
  *     description: Delete a menu item (Admin and SuperAdmin only)
@@ -400,7 +400,7 @@ router.delete('/:id', authenticateJWT, authorize(UserRole.ADMIN), asyncHandler(m
 
 /**
  * @swagger
- * /api/menu-items/{menuItemId}/images:
+ * /api/v1/menu-items/{menuItemId}/images:
  *   post:
  *     summary: Upload images for menu item
  *     description: Upload multiple images for a specific menu item (Admin and SuperAdmin only)
@@ -493,7 +493,7 @@ router.post('/:menuItemId/images',
 
 /**
  * @swagger
- * /api/menu-items/{menuItemId}/images/{imageUrl}:
+ * /api/v1/menu-items/{menuItemId}/images/{imageUrl}:
  *   delete:
  *     summary: Remove image from menu item
  *     description: Remove a specific image from a menu item (Admin and SuperAdmin only)
@@ -566,7 +566,7 @@ router.delete('/:menuItemId/images/:imageUrl',
 
 /**
  * @swagger
- * /api/menu-items/statistics/overview:
+ * /api/v1/menu-items/statistics/overview:
  *   get:
  *     summary: Get menu item statistics
  *     description: Get comprehensive statistics about menu items including counts and price statistics

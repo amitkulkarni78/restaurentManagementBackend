@@ -1,39 +1,19 @@
 import { DataSource } from 'typeorm';
 import logger from '../utils/logger';
 import { USER_ROLES } from '../utils/constants';
-
-// Import entities
-import User from '../models/User';
-import Order from '../models/Order';
-import Category from '../models/Category';
-import SubCategory from '../models/SubCategory';
-import MenuItem from '../models/MenuItem';
+import { AppDataSource } from './typeorm.config';
 
 class Database {
   private dataSource: DataSource | null = null;
 
   async connect(): Promise<DataSource> {
     try {
-      // Parse MongoDB URI to extract credentials
-      const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/restaurant_management';
+      // Initialize the data source using the centralized config
+      if (!AppDataSource.isInitialized) {
+        await AppDataSource.initialize();
+      }
       
-      // TypeORM configuration for MongoDB
-      this.dataSource = new DataSource({
-        type: 'mongodb',
-        url: mongoUri,
-        database: process.env.DB_NAME || 'restaurant_management',
-        entities: [User, Order, Category, SubCategory, MenuItem],
-        synchronize: false, // Disable auto-synchronization to avoid index issues
-        logging: process.env.NODE_ENV === 'development',
-        // Add authentication options if credentials are provided
-        ...(process.env.MONGODB_USERNAME && process.env.MONGODB_PASSWORD && {
-          username: process.env.MONGODB_USERNAME,
-          password: process.env.MONGODB_PASSWORD,
-        })
-      });
-
-      // Initialize the data source
-      await this.dataSource.initialize();
+      this.dataSource = AppDataSource;
       logger.info('✅ TypeORM MongoDB connection established successfully');
 
       // Initialize default data
@@ -105,11 +85,33 @@ class Database {
         }
       ];
 
+      // Use insertMany instead of individual save operations to avoid createValueMap issues
       for (const adminUser of adminUsers) {
-        await userRepository.save(adminUser);
+        try {
+          // Use the MongoDB driver directly to avoid TypeORM issues
+          const mongoDriver = (this.dataSource as any).driver;
+          const collection = mongoDriver.db.collection('User');
+          
+          // Check if user already exists
+          const existingUser = await collection.findOne({ 
+            $or: [
+              { email: adminUser.email },
+              { mobileNumber: adminUser.mobileNumber }
+            ]
+          });
+
+          if (!existingUser) {
+            await collection.insertOne(adminUser);
+            logger.info(`✅ Created admin user: ${adminUser.email}`);
+          } else {
+            logger.info(`⚠️  Admin user already exists: ${adminUser.email}`);
+          }
+        } catch (userError) {
+          logger.error(`Error creating admin user ${adminUser.email}:`, userError);
+        }
       }
 
-      logger.info('👥 Default admin users created');
+      logger.info('👥 Default admin users creation completed');
       logger.info('📧 Super Admin: superadmin@restaurant.com');
       logger.info('📧 Restaurant Manager: manager@restaurant.com');
       logger.info('🔑 Password for both: admin123456');

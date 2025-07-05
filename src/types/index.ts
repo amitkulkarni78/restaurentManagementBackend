@@ -31,6 +31,10 @@ export interface IUser {
       push: boolean;
     };
   };
+  refreshToken?: string;
+  loginAttempts?: number;
+  isLocked?: boolean;
+  lockedUntil?: Date;
   createdAt?: Date;
   updatedAt?: Date;
 }

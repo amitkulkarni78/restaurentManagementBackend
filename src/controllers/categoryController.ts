@@ -3,118 +3,148 @@ import { HTTP_STATUS, ERROR_MESSAGES, SUCCESS_MESSAGES } from '../utils/constant
 import { AppError } from '../middlewares/errorHandler';
 import db from '../config/db';
 import logger from '../utils/logger';
+import Category from '../models/Category';
+import SubCategory from '../models/SubCategory';
+import MenuItem from '../models/MenuItem';
 
 
 class CategoryController {
   
   async getAllCategories(req: Request, res: Response): Promise<void> {
     try {
-    const dataSource = db.getDataSource();
-    if (!dataSource) {
-      throw new AppError('Database not connected', HTTP_STATUS.INTERNAL_SERVER_ERROR);
+      const dataSource = db.getDataSource();
+      if (!dataSource) {
+        throw new AppError('Database not connected', HTTP_STATUS.INTERNAL_SERVER_ERROR);
+      }
+
+      const categoryRepository = dataSource.getRepository(Category);
+
+      // Parse query parameters
+      const { activeOnly = 'true', page = 1, limit = 10 } = req.query;
+      const skip = (Number(page) - 1) * Number(limit);
+
+      // Build where clause
+      const whereClause: any = {};
+      if (activeOnly === 'true') {
+        whereClause.activeFlag = true;
+      }
+
+      // Get categories with pagination
+      const [categories, total] = await categoryRepository.findAndCount({
+        where: whereClause,
+        order: { title: 'ASC' },
+        skip,
+        take: Number(limit),
+      });
+
+      const totalPages = Math.ceil(total / Number(limit));
+
+      logger.info(`Retrieved ${categories.length} categories`);
+
+      res.status(HTTP_STATUS.OK).json({
+        success: true,
+        message: SUCCESS_MESSAGES.CATEGORIES_RETRIEVED,
+        data: {
+          categories,
+          pagination: {
+            page: Number(page),
+            limit: Number(limit),
+            total,
+            totalPages,
+          },
+        },
+      });
+    } catch (error) {
+      logger.error('Error retrieving categories:', error);
+      throw new AppError(ERROR_MESSAGES.INTERNAL_SERVER_ERROR, HTTP_STATUS.INTERNAL_SERVER_ERROR);
     }
-
-    const categoryRepository = dataSource.getRepository('Category');
-    
-    const { activeOnly = 'true' } = req.query;
-    const whereCondition = activeOnly === 'true' ? { activeFlag: true } : {};
-
-    const categories = await categoryRepository.find({
-      where: whereCondition,
-      order: {
-        title: 'ASC',
-      },
-    });
-
-    res.status(HTTP_STATUS.OK).json({
-      success: true,
-      message: SUCCESS_MESSAGES.CATEGORIES_RETRIEVED,
-      data: {
-        categories,
-        count: categories.length,
-      },
-    });
-  } catch (error) {
-    logger.error('Error retrieving categories:', error);
-    throw new AppError(ERROR_MESSAGES.INTERNAL_SERVER_ERROR, HTTP_STATUS.INTERNAL_SERVER_ERROR);
-  }
   }
 
   // Get category by ID
   async getCategoryById(req: Request, res: Response): Promise<void> {
     try {
-    const { id } = req.params;
+      const { id } = req.params;
 
-    const dataSource = db.getDataSource();
-    if (!dataSource) {
-      throw new AppError('Database not connected', HTTP_STATUS.INTERNAL_SERVER_ERROR);
+      const dataSource = db.getDataSource();
+      if (!dataSource) {
+        throw new AppError('Database not connected', HTTP_STATUS.INTERNAL_SERVER_ERROR);
+      }
+
+      const categoryRepository = dataSource.getRepository(Category);
+
+      const category = await categoryRepository.findOne({
+        where: { id },
+      });
+
+      if (!category) {
+        throw new AppError('Category not found', HTTP_STATUS.NOT_FOUND);
+      }
+
+      logger.info(`Retrieved category: ${category.title}`);
+
+      res.status(HTTP_STATUS.OK).json({
+        success: true,
+        message: SUCCESS_MESSAGES.CATEGORY_RETRIEVED,
+        data: {
+          category,
+        },
+      });
+    } catch (error) {
+      logger.error('Error retrieving category:', error);
+      throw new AppError(ERROR_MESSAGES.INTERNAL_SERVER_ERROR, HTTP_STATUS.INTERNAL_SERVER_ERROR);
     }
-
-    const categoryRepository = dataSource.getRepository('Category');
-    
-    const category = await categoryRepository.findOne({
-      where: { id },
-    });
-
-    if (!category) {
-      throw new AppError('Category not found', HTTP_STATUS.NOT_FOUND);
-    }
-
-    res.status(HTTP_STATUS.OK).json({
-      success: true,
-      message: SUCCESS_MESSAGES.CATEGORY_RETRIEVED,
-      data: {
-        category,
-      },
-    });
-  } catch (error) {
-    logger.error('Error retrieving category:', error);
-    throw new AppError(ERROR_MESSAGES.INTERNAL_SERVER_ERROR, HTTP_STATUS.INTERNAL_SERVER_ERROR);
-  }
   }
 
   // Create new category
   async createCategory(req: Request, res: Response): Promise<void> {
     try {
-    const { title } = req.body;
+      const { title } = req.body;
 
-    const dataSource = db.getDataSource();
-    if (!dataSource) {
-      throw new AppError('Database not connected', HTTP_STATUS.INTERNAL_SERVER_ERROR);
+      if (!title || title.trim().length === 0) {
+        throw new AppError('Category title is required', HTTP_STATUS.BAD_REQUEST);
+      }
+
+      if (title.length > 100) {
+        throw new AppError('Category title must be less than 100 characters', HTTP_STATUS.BAD_REQUEST);
+      }
+
+      const dataSource = db.getDataSource();
+      if (!dataSource) {
+        throw new AppError('Database not connected', HTTP_STATUS.INTERNAL_SERVER_ERROR);
+      }
+
+      const categoryRepository = dataSource.getRepository(Category);
+
+      // Check if category with same title already exists
+      const existingCategory = await categoryRepository.findOne({
+        where: { title },
+      });
+
+      if (existingCategory) {
+        throw new AppError(ERROR_MESSAGES.CATEGORY_ALREADY_EXISTS, HTTP_STATUS.CONFLICT);
+      }
+
+      // Create new category
+      const category = categoryRepository.create({
+        title,
+        activeFlag: true,
+      });
+
+      const savedCategory = await categoryRepository.save(category);
+
+      logger.info(`New category created: ${savedCategory.title}`);
+
+      res.status(HTTP_STATUS.CREATED).json({
+        success: true,
+        message: SUCCESS_MESSAGES.CATEGORY_CREATED,
+        data: {
+          category: savedCategory,
+        },
+      });
+    } catch (error) {
+      logger.error('Error creating category:', error);
+      throw new AppError(ERROR_MESSAGES.INTERNAL_SERVER_ERROR, HTTP_STATUS.INTERNAL_SERVER_ERROR);
     }
-
-    const categoryRepository = dataSource.getRepository('Category');
-
-    // Check if category with same title already exists
-    const existingCategory = await categoryRepository.findOne({
-      where: { title },
-    });
-
-    if (existingCategory) {
-      throw new AppError('Category with this title already exists', HTTP_STATUS.CONFLICT);
-    }
-
-    // Create new category
-    const category = categoryRepository.create({
-      title,
-      activeFlag: true,
-    });
-
-    const savedCategory = await categoryRepository.save(category);
-
-    logger.info(`New category created: ${savedCategory.title}`);
-
-    res.status(HTTP_STATUS.CREATED).json({
-      success: true,
-      message: SUCCESS_MESSAGES.CATEGORY_CREATED,
-      data: {
-        category: savedCategory,
-      },
-    });
-  } catch (error) {
-    logger.error('Error creating category:', error);
-    throw new AppError(ERROR_MESSAGES.INTERNAL_SERVER_ERROR, HTTP_STATUS.INTERNAL_SERVER_ERROR);
-  }
   }
 
   // Update category
@@ -128,7 +158,7 @@ class CategoryController {
       throw new AppError('Database not connected', HTTP_STATUS.INTERNAL_SERVER_ERROR);
     }
 
-    const categoryRepository = dataSource.getRepository('Category');
+    const categoryRepository = dataSource.getRepository(Category);
 
     // Find category
     const category = await categoryRepository.findOne({
@@ -190,9 +220,9 @@ class CategoryController {
       throw new AppError('Database not connected', HTTP_STATUS.INTERNAL_SERVER_ERROR);
     }
 
-    const categoryRepository = dataSource.getRepository('Category');
-    const subCategoryRepository = dataSource.getRepository('SubCategory');
-    const menuItemRepository = dataSource.getRepository('MenuItem');
+    const categoryRepository = dataSource.getRepository(Category);
+    const subCategoryRepository = dataSource.getRepository(SubCategory);
+    const menuItemRepository = dataSource.getRepository(MenuItem);
 
     // Check if category exists
     const category = await categoryRepository.findOne({
@@ -248,9 +278,9 @@ class CategoryController {
       throw new AppError('Database not connected', HTTP_STATUS.INTERNAL_SERVER_ERROR);
     }
 
-    const categoryRepository = dataSource.getRepository('Category');
-    const subCategoryRepository = dataSource.getRepository('SubCategory');
-    const menuItemRepository = dataSource.getRepository('MenuItem');
+    const categoryRepository = dataSource.getRepository(Category);
+    const subCategoryRepository = dataSource.getRepository(SubCategory);
+    const menuItemRepository = dataSource.getRepository(MenuItem);
 
     const totalCategories = await categoryRepository.count();
     const activeCategories = await categoryRepository.count({ where: { activeFlag: true } });
@@ -279,9 +309,11 @@ class CategoryController {
       })
     );
 
+    logger.info(`Retrieved category statistics`);
+
     res.status(HTTP_STATUS.OK).json({
       success: true,
-      message: 'Category statistics retrieved successfully',
+      message: SUCCESS_MESSAGES.CATEGORY_STATISTICS_RETRIEVED,
       data: {
         totalCategories,
         activeCategories,

@@ -8,7 +8,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/subcategories:
+ * /api/v1/subcategories:
  *   get:
  *     summary: Get all subcategories
  *     description: Retrieve all subcategories with optional filtering by active status
@@ -18,8 +18,8 @@ const router = express.Router();
  *         name: activeOnly
  *         schema:
  *           type: string
- *           enum: [true, false]
- *         description: Filter by active status (default: true)
+ *           enum: ["true", "false"]
+ *         description: Filter by active status (default true)
  *       - in: query
  *         name: categoryId
  *         schema:
@@ -74,7 +74,7 @@ router.get('/', subCategoryController.getAllSubCategories);
 
 /**
  * @swagger
- * /api/subcategories/{id}:
+ * /api/v1/subcategories/{id}:
  *   get:
  *     summary: Get subcategory by ID
  *     description: Retrieve a specific subcategory by its ID
@@ -122,7 +122,7 @@ router.get('/:id', subCategoryController.getSubCategoryById);
 
 /**
  * @swagger
- * /api/subcategories:
+ * /api/v1/subcategories:
  *   post:
  *     summary: Create a new subcategory
  *     description: Create a new subcategory (Admin and SuperAdmin only)
@@ -198,7 +198,7 @@ router.post('/', authenticateJWT, authorize(UserRole.ADMIN), asyncHandler(subCat
 
 /**
  * @swagger
- * /api/subcategories/{id}:
+ * /api/v1/subcategories/{id}:
  *   put:
  *     summary: Update a subcategory
  *     description: Update an existing subcategory (Admin and SuperAdmin only)
@@ -282,7 +282,7 @@ router.put('/:id', authenticateJWT, authorize(UserRole.ADMIN), asyncHandler(subC
 
 /**
  * @swagger
- * /api/subcategories/{id}:
+ * /api/v1/subcategories/{id}:
  *   delete:
  *     summary: Delete a subcategory
  *     description: Delete a subcategory (Admin and SuperAdmin only)
@@ -339,7 +339,7 @@ router.delete('/:id', authenticateJWT, authorize(UserRole.ADMIN), asyncHandler(s
 
 /**
  * @swagger
- * /api/subcategories/category/{categoryId}:
+ * /api/v1/subcategories/category/{categoryId}:
  *   get:
  *     summary: Get subcategories by category ID
  *     description: Retrieve all subcategories for a specific category
@@ -355,8 +355,8 @@ router.delete('/:id', authenticateJWT, authorize(UserRole.ADMIN), asyncHandler(s
  *         name: activeOnly
  *         schema:
  *           type: string
- *           enum: [true, false]
- *         description: Filter by active status (default: true)
+ *           enum: ["true", "false"]
+ *         description: Filter by active status (default true)
  *       - in: query
  *         name: page
  *         schema:
@@ -412,7 +412,7 @@ router.get('/category/:categoryId', subCategoryController.getSubCategoriesByCate
 
 /**
  * @swagger
- * /api/subcategories/statistics/overview:
+ * /api/v1/subcategories/statistics/overview:
  *   get:
  *     summary: Get subcategory statistics
  *     description: Get comprehensive statistics about subcategories including counts and related data

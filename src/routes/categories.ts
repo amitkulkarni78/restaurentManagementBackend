@@ -1,5 +1,5 @@
 import express from 'express';
-import { authenticateJWT, authorize } from '../middlewares/auth';
+import { adminOnly, authenticateJWT, authorize } from '../middlewares/auth';
 import { asyncHandler } from '../middlewares/errorHandler';
 import categoryController from '../controllers/categoryController';
 import { UserRole } from '../types';
@@ -8,7 +8,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/categories:
+ * /api/v1/categories:
  *   get:
  *     summary: Get all categories
  *     description: Retrieve all categories with optional filtering by active status
@@ -18,8 +18,8 @@ const router = express.Router();
  *         name: activeOnly
  *         schema:
  *           type: string
- *           enum: [true, false]
- *         description: Filter by active status (default: true)
+ *           enum: ["true", "false"]
+ *         description: Filter by active status (default true)
  *       - in: query
  *         name: page
  *         schema:
@@ -69,7 +69,7 @@ router.get('/', categoryController.getAllCategories);
 
 /**
  * @swagger
- * /api/categories/{id}:
+ * /api/v1/categories/{id}:
  *   get:
  *     summary: Get category by ID
  *     description: Retrieve a specific category by its ID
@@ -117,7 +117,7 @@ router.get('/:id', categoryController.getCategoryById);
 
 /**
  * @swagger
- * /api/categories:
+ * /api/v1/categories:
  *   post:
  *     summary: Create a new category
  *     description: Create a new category (Admin and SuperAdmin only)
@@ -182,11 +182,11 @@ router.get('/:id', categoryController.getCategoryById);
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post('/', authenticateJWT, authorize(UserRole.ADMIN), asyncHandler(categoryController.createCategory));
+router.post('/', authenticateJWT, adminOnly, asyncHandler(categoryController.createCategory));
 
 /**
  * @swagger
- * /api/categories/{id}:
+ * /api/v1/categories/{id}:
  *   put:
  *     summary: Update a category
  *     description: Update an existing category (Admin and SuperAdmin only)
@@ -265,11 +265,11 @@ router.post('/', authenticateJWT, authorize(UserRole.ADMIN), asyncHandler(catego
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.put('/:id', authenticateJWT, authorize(UserRole.ADMIN), asyncHandler(categoryController.updateCategory));
+router.put('/:id', authenticateJWT, adminOnly, asyncHandler(categoryController.updateCategory));
 
 /**
  * @swagger
- * /api/categories/{id}:
+ * /api/v1/categories/{id}:
  *   delete:
  *     summary: Delete a category
  *     description: Delete a category (Admin and SuperAdmin only)
@@ -326,7 +326,7 @@ router.delete('/:id', authenticateJWT, authorize(UserRole.ADMIN), asyncHandler(c
 
 /**
  * @swagger
- * /api/categories/statistics/overview:
+ * /api/v1/categories/statistics/overview:
  *   get:
  *     summary: Get category statistics
  *     description: Get comprehensive statistics about categories including counts and related data

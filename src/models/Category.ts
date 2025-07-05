@@ -47,7 +47,6 @@ const CategorySchema = new EntitySchema<Category>({
     {
       name: 'IDX_CATEGORY_TITLE',
       columns: ['title'],
-      unique: true,
     },
     {
       name: 'IDX_CATEGORY_ACTIVE',

@@ -1,7 +1,7 @@
 import { EntitySchema } from 'typeorm';
 import { IOrder, OrderItem, OrderStatus, OrderType, PaymentStatus, PaymentMethod } from '../types';
 
-export class Order implements IOrder {
+class Order implements IOrder {
   id?: string;
   orderNumber: string;
   userId: string;
@@ -29,7 +29,7 @@ export class Order implements IOrder {
   updatedAt?: Date;
 }
 
-const orderSchema = {
+const OrderSchema = new EntitySchema({
   name: 'Order',
   target: Order,
   columns: {
@@ -169,14 +169,8 @@ const orderSchema = {
       type: 'timestamp',
       nullable: true
     }
-  },
-  relations: {
-    user: {
-      type: 'many-to-one',
-      target: 'User',
-      joinColumn: { name: 'userId' }
-    }
   }
-};
+});
 
-export default new EntitySchema(orderSchema as any); 
+export { Order };
+export default OrderSchema; 
